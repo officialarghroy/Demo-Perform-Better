@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AtSign, Clock, Globe, MapPin, MessageCircle, Phone } from "lucide-react";
+import { AtSign, Clock, MapPin, Phone } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import { FadeIn } from "@/components/ui";
+
+const SOCIAL_LINKS = [
+  { label: "Instagram", href: "https://www.instagram.com/performbetter.bh", Icon: FaInstagram },
+  { label: "Facebook", href: "https://www.facebook.com/people/Perform-Better-Gym/61564134984346/", Icon: FaFacebookF },
+  { label: "TikTok", href: "https://www.tiktok.com/@perform.better.fi", Icon: FaTiktok },
+  { label: "YouTube", href: "https://www.youtube.com/@performbetterfitnesscenter1427", Icon: FaYoutube },
+];
 
 const FOOTER_LINKS = [
   { label: "Home", href: "/" },
@@ -14,7 +22,7 @@ const PHONE_NUMBERS = ["39268852", "39253446"];
 
 export default function Footer() {
   return (
-    <footer>
+    <footer id="contact">
       <div className="mx-auto max-w-7xl px-8">
         <div className="grid gap-8 border-t border-white/10 py-16 md:grid-cols-4">
           {/* Col 1: brand */}
@@ -26,17 +34,22 @@ export default function Footer() {
               </span>
             </Link>
             <p className="max-w-xs text-sm text-gray-400">
-              Perform Better Fitness Center — placeholder tagline goes here.
+              Developed with Experts, Inspired by Athletes...
             </p>
-            {/* TODO: real Instagram/Facebook URLs and a real business email — ask the client. */}
             <div className="mt-2 flex items-center gap-4">
-              <Link href="#" aria-label="Instagram" className="text-gray-400 transition-colors hover:text-brand-gold">
-                <Globe className="h-5 w-5" />
-              </Link>
-              <Link href="#" aria-label="Facebook" className="text-gray-400 transition-colors hover:text-brand-gold">
-                <MessageCircle className="h-5 w-5" />
-              </Link>
-              <Link href="#" aria-label="Email" className="text-gray-400 transition-colors hover:text-brand-gold">
+              {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 transition-colors hover:text-brand-gold"
+                >
+                  <Icon className="h-5 w-5" />
+                </Link>
+              ))}
+              <Link href="mailto:performbetter.bh@gmail.com" aria-label="Email" className="text-gray-400 transition-colors hover:text-brand-gold">
                 <AtSign className="h-5 w-5" />
               </Link>
             </div>
@@ -68,14 +81,14 @@ export default function Footer() {
             <div className="flex items-start gap-3 text-sm text-gray-400">
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold" />
               <div className="flex flex-col gap-1">
-                <span>Sat–Thu: 5 AM to 1 AM</span>
-                <span>Fri: 4 PM to 11 PM</span>
+                <span>Sat–Thu: 5 AM - 1 AM</span>
+                <span>Fri: 4 PM - 11 PM</span>
               </div>
             </div>
           </FadeIn>
 
-          {/* Col 4: contact — id target for the "Contact" nav links */}
-          <FadeIn delay={0.3} id="contact">
+          {/* Col 4: contact */}
+          <FadeIn delay={0.3}>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-500">
               Contact
             </h3>

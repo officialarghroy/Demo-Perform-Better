@@ -1,13 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { Baby, Flame, User, Zap } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { MagneticButton } from "@/components/ui";
 import { useModal } from "@/context/ModalContext";
 
 // Looping cinematic background video (public/hero-video.mp4), muted so
-// autoplay is allowed by every browser. The still photo now only
-// serves as the `poster` frame shown before the video has loaded.
+// autoplay is allowed by every browser. Compressed to 720p/~6MB with
+// `+faststart` so it starts playing quickly instead of competing with
+// page hydration for bandwidth on slower connections. The still photo
+// is both the `poster` (shown before the video has a frame ready) and
+// the fallback background if the video ever fails to load — see
+// `videoFailed` below.
 const BACKGROUND_VIDEO = "/hero-video.mp4";
 const BACKGROUND_POSTER =
   "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1920&auto=format&fit=crop";
@@ -35,34 +40,33 @@ const CARDS = [
   },
 ];
 
-// Two lines, each a list of words — "Transform" alone carries the gold
-// accent. Kept as data (rather than one string) so each word can be
-// animated as its own masked unit.
-const LINE_1 = ["Train", "Smart."];
-const LINE_2 = [
-  { text: "Transform", gold: true },
-  { text: "Better." },
-];
-
 // A slightly custom "expo out" curve — snappier off the start and a
-// softer landing than the generic `easeOut`, used for both the word
-// reveal and the card entrance so the whole hero reads as one motion
-// language.
+// softer landing than the generic `easeOut`, used throughout so the
+// whole hero reads as one motion language.
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+// Two lines, staggered — simple opacity+y fades (the same proven
+// pattern as components/ui/FadeIn), not a per-word overflow-hidden
+// mask. The masked version looked sharper but had a real failure mode:
+// each word's *content* was only made visible by JS-computed transform
+// styles, so on a slow/unlucky load (e.g. hydration delayed by a heavy
+// hero video competing for bandwidth) the headline could sit invisible
+// for longer than expected, reading as "text not loading". This
+// version keeps the staggered reveal but fewer moving parts, less
+// dependent on precise mask/font-metric timing.
 const headingContainer: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.15, delayChildren: 0.2 },
   },
 };
 
-const wordVariants: Variants = {
-  hidden: { y: "100%" },
-  visible: { y: "0%", transition: { duration: 0.7, ease: EASE } },
+const lineVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
-// Fades in right as the headline lands (words finish ≈1.14s in — see
+// Fades in right as the headline lands (line 2 finishes ≈1.05s in — see
 // headingContainer above) — a third beat between the text and the cards.
 const ctaVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
@@ -83,28 +87,11 @@ const cardVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
 };
 
-interface AnimatedWordProps {
-  children: string;
-  className?: string;
-}
-
-/** A single word masked by an `overflow-hidden` box, revealed by its
- * inner span sliding up from below the mask. `pb-[0.2em]`/`-mb-[0.2em]`
- * give descenders (g, y) room inside the mask so they don't clip. */
-function AnimatedWord({ children, className = "" }: AnimatedWordProps) {
-  return (
-    <span className="inline-block overflow-hidden pb-[0.2em] pr-[0.2em] -mb-[0.2em]">
-      <motion.span variants={wordVariants} className={`inline-block ${className}`}>
-        {children}
-      </motion.span>
-    </span>
-  );
-}
-
 /**
  * High-end hero: full-viewport looping background video (dimmed via
- * `brightness-50` for a cinematic feel) under a heavy 3-stop dark
- * gradient, a staggered word-by-word headline reveal, a
+ * `brightness-50` for a cinematic feel, falling back to a plain poster
+ * image if the video ever fails to load — see `videoFailed`) under a
+ * heavy 3-stop dark gradient, a staggered two-line headline reveal, a
  * "BOOK YOUR INTRO SESSION" CTA that opens the global BookingModal
  * (ModalContext) once the headline lands, and a row of 4 cards pinned
  * `-bottom-16` past the hero's own bottom edge that slide up
@@ -124,21 +111,32 @@ function AnimatedWord({ children, className = "" }: AnimatedWordProps) {
  */
 export default function Hero() {
   const { open: openBookingModal } = useModal();
+  const [videoFailed, setVideoFailed] = useState(false);
 
   return (
     <section className="relative flex h-screen w-full flex-col items-center justify-center">
-      {/* Looping cinematic background video — brightness-50 keeps it
-          deliberately dim/moody, on top of the gradient below. */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster={BACKGROUND_POSTER}
-        className="absolute inset-0 h-full w-full object-cover brightness-50"
-      >
-        <source src={BACKGROUND_VIDEO} type="video/mp4" />
-      </video>
+      {/* Background: video, or a plain poster image if it ever errors. */}
+      {videoFailed ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={BACKGROUND_POSTER}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover brightness-50"
+        />
+      ) : (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster={BACKGROUND_POSTER}
+          onError={() => setVideoFailed(true)}
+          className="absolute inset-0 h-full w-full object-cover brightness-50"
+        >
+          <source src={BACKGROUND_VIDEO} type="video/mp4" />
+        </video>
+      )}
 
       {/* Heavy dark overlay */}
       <div
@@ -149,7 +147,7 @@ export default function Hero() {
       {/* Center text */}
       <div className="relative z-10 px-4 text-center">
         <span className="block text-xs uppercase tracking-widest text-gray-400">
-          Future of fitness with Perform Better
+          Developed with experts, inspired by athletes...
         </span>
         <motion.h1
           initial="hidden"
@@ -157,18 +155,12 @@ export default function Hero() {
           variants={headingContainer}
           className="mt-6 text-4xl font-extrabold uppercase leading-tight tracking-tight sm:text-6xl md:text-9xl"
         >
-          <span className="block">
-            {LINE_1.map((word) => (
-              <AnimatedWord key={word}>{word}</AnimatedWord>
-            ))}
-          </span>
-          <span className="block">
-            {LINE_2.map((word) => (
-              <AnimatedWord key={word.text} className={word.gold ? "text-[#D4AF37]" : undefined}>
-                {word.text}
-              </AnimatedWord>
-            ))}
-          </span>
+          <motion.span variants={lineVariants} className="block">
+            Train Smart.
+          </motion.span>
+          <motion.span variants={lineVariants} className="block">
+            <span className="text-[#D4AF37]">Transform</span> Better.
+          </motion.span>
         </motion.h1>
 
         <motion.div initial="hidden" animate="visible" variants={ctaVariants} className="mt-8">

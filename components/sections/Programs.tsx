@@ -2,7 +2,7 @@
 
 import { Music2, Shield, Swords, Tent, Zap } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import { FadeIn } from "@/components/ui";
+import { FadeIn, TextReveal } from "@/components/ui";
 
 // The parent card and its icon share the "rest"/"hover" variant names —
 // the icon has no `initial`/`whileHover` of its own, so it inherits
@@ -60,11 +60,12 @@ const KIDS_CLASSES = [
 export default function Programs() {
   return (
     <section className="mx-auto max-w-7xl px-8 py-32">
-      <FadeIn>
-        <h2 className="text-center text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">
-          Find Your <span className="text-brand-gold">Program</span>
-        </h2>
-      </FadeIn>
+      <TextReveal
+        as="h2"
+        text="Find Your Program"
+        highlightWords={["Program"]}
+        className="text-center text-4xl font-extrabold uppercase tracking-tight sm:text-5xl"
+      />
 
       <div className="mt-16 grid gap-12 md:grid-cols-2">
         <FadeIn delay={0.1}>

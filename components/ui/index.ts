@@ -20,3 +20,6 @@ export { default as FadeIn } from "./FadeIn";
 export type { FadeInProps } from "./FadeIn";
 
 export { default as BookingModal } from "./BookingModal";
+
+export { default as TextReveal } from "./TextReveal";
+export type { TextRevealProps } from "./TextReveal";

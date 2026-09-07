@@ -1,4 +1,4 @@
-import { BentoCard, FadeIn } from "@/components/ui";
+import { BentoCard, FadeIn, TextReveal } from "@/components/ui";
 
 // Placeholder stock photography — swap for real Perform Better member/facility photos.
 const WEIGHT_LOSS_IMAGE =
@@ -21,24 +21,26 @@ export default function AboutBento() {
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">
             About Us
           </span>
-          <h2 className="mt-4 text-4xl font-extrabold uppercase leading-[1.05] tracking-tight sm:text-5xl">
-            This is <span className="text-[#D4AF37]">Perform Better</span>
-          </h2>
+          <TextReveal
+            as="h2"
+            text="This is Perform Better"
+            highlightWords={["Perform", "Better"]}
+            highlightClassName="text-[#D4AF37]"
+            className="mt-4 text-4xl font-extrabold uppercase leading-[1.05] tracking-tight sm:text-5xl"
+          />
         </FadeIn>
 
         <FadeIn delay={0.15} className="md:w-2/3">
           <p className="text-lg leading-relaxed text-gray-400">
-            Perform Better was developed hand-in-hand with certified strength
-            coaches, physiotherapists, and nutrition experts — then shaped by
-            the discipline of the athletes who trained here first. Every
-            program on our floor blends evidence-based methodology with
-            real-world results, built by people who&apos;ve done it
-            themselves.
+            We are a professional fitness center dedicated to results — not
+            just routines. We don&apos;t just sell memberships; we build real
+            body transformations.
           </p>
           <p className="mt-4 text-lg leading-relaxed text-gray-400">
-            Whether you&apos;re chasing your first pull-up or your fiftieth
-            kilogram lost, you&apos;re following a system designed around
-            what actually works.
+            Whether your goal is fat loss, muscular gain, rehabilitation, or
+            athletic conditioning, we give you the tools to make it a
+            lifestyle change. One size does not fit all, which is why having
+            individual instruction is vital to success.
           </p>
         </FadeIn>
       </div>

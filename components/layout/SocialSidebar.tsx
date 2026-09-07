@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaWhatsapp, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTiktok, FaWhatsapp, FaYoutube } from "react-icons/fa";
 
 const SOCIAL_LINKS = [
-  // TODO: Facebook/Instagram/YouTube need real handles — ask the client.
-  { label: "Facebook", href: "#", Icon: FaFacebookF },
-  { label: "Instagram", href: "#", Icon: FaInstagram },
-  { label: "YouTube", href: "#", Icon: FaYoutube },
+  { label: "Facebook", href: "https://www.facebook.com/people/Perform-Better-Gym/61564134984346/", Icon: FaFacebookF },
+  { label: "Instagram", href: "https://www.instagram.com/performbetter.bh", Icon: FaInstagram },
+  { label: "TikTok", href: "https://www.tiktok.com/@perform.better.fi", Icon: FaTiktok },
+  { label: "YouTube", href: "https://www.youtube.com/@performbetterfitnesscenter1427", Icon: FaYoutube },
   // Real click-to-chat link using the number already in the Footer.
   { label: "WhatsApp", href: "https://wa.me/97339268852", Icon: FaWhatsapp },
 ];
