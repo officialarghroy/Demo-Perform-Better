@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import Navbar from "@/components/Navbar";
+import { Montserrat } from "next/font/google";
+import Navbar from "@/components/layout/Navbar";
+import SocialSidebar from "@/components/layout/SocialSidebar";
 import Footer from "@/components/Footer";
+import { BookingModal } from "@/components/ui";
+import { ModalProvider } from "@/context/ModalContext";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,11 +27,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col bg-background text-foreground antialiased`}
+        className={`${montserrat.variable} flex min-h-screen flex-col bg-background font-sans font-medium text-foreground antialiased`}
       >
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ModalProvider>
+          <Navbar />
+          <SocialSidebar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <BookingModal />
+        </ModalProvider>
       </body>
     </html>
   );
