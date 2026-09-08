@@ -54,7 +54,7 @@ export default function AboutBento() {
           <BentoCard
             image={WEIGHT_LOSS_IMAGE}
             title="Weight Loss Journey"
-            className="h-full"
+            className="min-h-[350px] md:min-h-0 md:h-full"
             rounded="rounded-3xl"
             overlayClassName="bg-gradient-to-t from-black/90 via-transparent"
           />
@@ -65,7 +65,7 @@ export default function AboutBento() {
             <BentoCard
               image={STRENGTH_IMAGE}
               title="Strength Building"
-              className="h-full"
+              className="min-h-[350px] md:min-h-0 md:h-full"
               rounded="rounded-3xl"
               overlayClassName="bg-gradient-to-t from-black/90 via-transparent"
             />
@@ -74,7 +74,7 @@ export default function AboutBento() {
             <BentoCard
               image={COMBAT_IMAGE}
               title="Combat Conditioning"
-              className="h-full"
+              className="min-h-[350px] md:min-h-0 md:h-full"
               rounded="rounded-3xl"
               overlayClassName="bg-gradient-to-t from-black/90 via-transparent"
             />

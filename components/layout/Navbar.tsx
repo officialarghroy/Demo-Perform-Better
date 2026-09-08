@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { MagneticButton } from "@/components/ui";
+import { MagneticButton, TextReveal } from "@/components/ui";
 import { useModal } from "@/context/ModalContext";
 
 const NAV_LINKS = [
@@ -23,6 +24,22 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { open: openBookingModal } = useModal();
+
+  // Escape-to-close + body scroll lock while the full-screen mobile menu
+  // is open — same pattern as BookingModal.
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsOpen(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
@@ -59,11 +76,12 @@ export default function Navbar() {
           </MagneticButton>
         </div>
 
-        {/* Mobile menu toggle */}
+        {/* Mobile menu toggle — relative z-50 keeps it clickable above the
+            full-screen overlay below, which sits at z-40. */}
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="justify-self-end text-foreground md:hidden"
+          className="relative z-50 justify-self-end text-foreground md:hidden"
           aria-label="Toggle navigation menu"
           aria-expanded={isOpen}
         >
@@ -71,33 +89,47 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu — needs a solid backdrop since the header itself is transparent */}
-      {isOpen && (
-        <div className="border-b border-glass bg-background md:hidden">
-          <div className="flex flex-col gap-1 px-4 py-4">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium uppercase tracking-wide text-foreground/80 transition-colors hover:bg-white/5 hover:text-brand-gold"
-              >
-                {link.label}
-              </Link>
-            ))}
+      {/* Full-screen mobile menu overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-40 flex flex-col justify-center bg-[#0A0A0A]/95 px-8 backdrop-blur-2xl md:hidden"
+          >
+            <div className="flex flex-col gap-4">
+              {NAV_LINKS.map((link, index) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className="text-foreground transition-colors hover:text-brand-gold"
+                >
+                  <TextReveal
+                    as="span"
+                    text={link.label}
+                    delay={0.1 + index * 0.1}
+                    className="block text-4xl font-extrabold uppercase"
+                  />
+                </Link>
+              ))}
+            </div>
+
             <MagneticButton
               strength={0.3}
               onClick={() => {
                 setIsOpen(false);
                 openBookingModal();
               }}
-              className="mt-2 !w-full !bg-white !text-black !text-xs !tracking-[0.15em]"
+              className="mt-10 !w-full !bg-white !text-black !text-xs !tracking-[0.15em]"
             >
               BOOK YOUR INTRO SESSION
             </MagneticButton>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

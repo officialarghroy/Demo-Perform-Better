@@ -101,7 +101,7 @@ function Block({ title, description, icon: Icon }: BlockProps) {
   const contentX = useTransform(scrollYProgress, KEYFRAMES, [0, 0, 12, 0, 0]);
 
   return (
-    <div ref={ref} className="flex gap-6 pl-8">
+    <div ref={ref} className="flex gap-6 pl-12 md:pl-8">
       <motion.div
         style={{ color: iconColor, backgroundColor: iconBg, borderColor: iconBorder, scale: iconScale }}
         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border"

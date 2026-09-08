@@ -94,6 +94,7 @@ function ProgramGroup({ title, classes }: ProgramGroupProps) {
             key={item.title}
             initial="rest"
             whileHover="hover"
+            whileTap={{ scale: 0.97 }}
             variants={cardVariants}
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex items-start gap-4 rounded-2xl border border-white/5 p-6 transition-colors hover:border-[#D4AF37]/50"

@@ -41,7 +41,7 @@ export default function PricingPage() {
   const { open: openBookingModal } = useModal();
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-5xl px-4 pb-20 pt-32 sm:px-6 lg:px-8">
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Simple, <span className="text-brand-gold">Transparent</span> Pricing

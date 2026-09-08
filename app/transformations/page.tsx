@@ -3,7 +3,7 @@ import { TRANSFORMATION_STORIES } from "@/lib/transformation-stories";
 
 export default function TransformationsPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 pb-20 pt-32 sm:px-6 lg:px-8">
       <div className="mb-14 text-center">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           Real Members. <span className="text-brand-gold">Real Results.</span>

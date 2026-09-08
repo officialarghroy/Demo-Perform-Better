@@ -105,16 +105,17 @@ const cardVariants: Variants = {
  * into at a given breakpoint — whatever section follows this one should
  * reserve a bit more than that (see AboutBento's `pt-*`) as clearance.
  *
- * The card grid itself is `grid-cols-4` at the `lg` breakpoint and up
- * (the exact spec), with a `grid-cols-2` fallback below it — 4 equal
- * columns with p-6 cards would be illegibly cramped on a phone.
+ * The card row is a `grid-cols-4` grid at the `lg` breakpoint and up,
+ * but a horizontally `snap`-scrolling flex carousel below it — 4 equal
+ * columns squeezed into a phone width would be illegibly cramped, so
+ * each card gets its own near-full-width, centered slide instead.
  */
 export default function Hero() {
   const { open: openBookingModal } = useModal();
   const [videoFailed, setVideoFailed] = useState(false);
 
   return (
-    <section className="relative flex h-screen w-full flex-col items-center justify-center">
+    <section className="relative flex h-[100dvh] w-full flex-col items-center justify-center">
       {/* Background: video, or a plain poster image if it ever errors. */}
       {videoFailed ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -153,7 +154,7 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           variants={headingContainer}
-          className="mt-6 text-4xl font-extrabold uppercase leading-tight tracking-tight sm:text-6xl md:text-9xl"
+          className="mt-6 text-[11vw] font-extrabold uppercase leading-[0.9] tracking-tight md:text-8xl lg:text-9xl"
         >
           <motion.span variants={lineVariants} className="block">
             Train Smart.
@@ -180,14 +181,15 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           variants={cardsContainer}
-          className="mx-auto grid max-w-7xl grid-cols-2 gap-4 lg:grid-cols-4"
+          className="mx-auto flex w-full max-w-7xl snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
         >
           {CARDS.map((card) => (
             <motion.div
               key={card.title}
               variants={cardVariants}
               whileHover={{ scale: 1.01 }}
-              className="rounded-2xl border border-white/5 bg-[#111111] p-4 backdrop-blur-md transition-all duration-300 hover:border-brand-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] lg:p-6"
+              whileTap={{ scale: 0.97 }}
+              className="w-[85vw] shrink-0 snap-center rounded-2xl border border-white/5 bg-[#111111] p-4 backdrop-blur-md transition-all duration-300 hover:border-brand-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] sm:w-[300px] lg:w-auto lg:p-6"
             >
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold">
                 <card.icon className="h-5 w-5" />

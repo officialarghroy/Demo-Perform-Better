@@ -43,6 +43,14 @@ const config: Config = {
       },
     },
   },
+  // `hover:` utilities only apply on devices that actually support
+  // hover (per a `@media (hover: hover)` check) — without this, tapping
+  // a mobile phone can "stick" an element in its `:hover` state until
+  // the user taps elsewhere, since touchscreens fire `:hover` on tap
+  // with no corresponding mouse-leave to clear it.
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   plugins: [],
 };
 export default config;

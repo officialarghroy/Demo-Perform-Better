@@ -95,7 +95,14 @@ export default function Footer() {
             <div className="flex flex-col gap-3 text-sm text-gray-400">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold" />
-                <span>Shop no 309, Golden sand building no 281, Hoora</span>
+                <a
+                  href="https://maps.app.goo.gl/fhmwZTE6eLrdE8Eb6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-brand-gold cursor-pointer"
+                >
+                  Shop no 309, Golden sand building no 281, Hoora
+                </a>
               </div>
               <div className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand-gold" />
