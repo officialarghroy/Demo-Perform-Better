@@ -59,7 +59,7 @@ const KIDS_CLASSES = [
 
 export default function Programs() {
   return (
-    <section className="mx-auto max-w-7xl px-8 py-32">
+    <section className="mx-auto max-w-7xl px-8 py-16 lg:py-32">
       <TextReveal
         as="h2"
         text="Find Your Program"

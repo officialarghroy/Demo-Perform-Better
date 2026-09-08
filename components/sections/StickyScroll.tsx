@@ -47,7 +47,7 @@ const CONTENT = [
  */
 export default function StickyScroll() {
   return (
-    <section className="relative mx-auto flex max-w-7xl flex-col px-8 py-32 md:flex-row">
+    <section className="relative mx-auto flex max-w-7xl flex-col px-8 py-16 lg:py-32 md:flex-row">
       {/* Left column — sticky on desktop. `w-1/2`/`sticky` are gated
           behind `md:` — applied unconditionally they'd force a stacked
           mobile layout into half-width columns for no benefit, since
@@ -63,7 +63,7 @@ export default function StickyScroll() {
       </div>
 
       {/* Right column — timeline list */}
-      <div className="mt-16 flex w-full flex-col gap-32 border-l border-white/10 md:mt-0 md:w-1/2">
+      <div className="mt-16 flex w-full flex-col gap-16 lg:gap-32 border-l border-white/10 md:mt-0 md:w-1/2">
         {CONTENT.map((item) => (
           <Block key={item.title} {...item} />
         ))}

@@ -12,10 +12,11 @@ const COMBAT_IMAGE =
 // `-bottom-16` card overlap when this section directly follows
 // <Hero /> (see components/sections/Hero.tsx). Below `lg`, Hero's cards
 // flow in-document instead of overlapping — there's nothing to clear,
-// so a plain `py-20` there would leave a needlessly huge empty gap.
+// so mobile uses a tighter `py-16` to avoid the large empty gaps a
+// desktop-sized padding would leave on short viewports.
 export default function AboutBento() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-20 sm:px-8 lg:py-32">
+    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-8 lg:py-32">
       {/* Split text layout */}
       <div className="mb-16 flex flex-col gap-16 md:flex-row">
         <FadeIn className="md:w-1/3">

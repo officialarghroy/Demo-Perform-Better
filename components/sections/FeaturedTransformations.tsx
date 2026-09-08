@@ -10,7 +10,7 @@ const FEATURED = TRANSFORMATION_STORIES.slice(0, 3);
 
 export default function FeaturedTransformations() {
   return (
-    <section className="mx-auto max-w-7xl px-8 py-32">
+    <section className="mx-auto max-w-7xl px-8 py-16 lg:py-32">
       <FadeIn className="text-center">
         <h2 className="text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">
           Real <span className="text-brand-gold">Transformations</span>

@@ -22,7 +22,8 @@ export default function TestimonialMarquee() {
   return (
     <section className="overflow-hidden border-y border-white/10 bg-white/[0.03] py-20">
       <h2 className="mb-12 px-4 text-center text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
-        Real Members. <span className="text-brand-gold">Real Results.</span>
+        <span className="block">Real Members.</span>
+        <span className="block text-brand-gold">Real Results.</span>
       </h2>
 
       <div className="relative w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
