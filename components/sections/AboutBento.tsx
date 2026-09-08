@@ -15,7 +15,7 @@ const COMBAT_IMAGE =
 // so a plain `py-20` there would leave a needlessly huge empty gap.
 export default function AboutBento() {
   return (
-    <section className="mx-auto max-w-7xl px-8 py-20 lg:py-32">
+    <section className="mx-auto max-w-7xl px-4 py-20 sm:px-8 lg:py-32">
       {/* Split text layout */}
       <div className="mb-16 flex flex-col gap-16 md:flex-row">
         <FadeIn className="md:w-1/3">
@@ -51,31 +51,31 @@ export default function AboutBento() {
           moves onto the FadeIn wrapper, since it's now the actual grid
           item; BentoCard gets `h-full` so it fills that wrapper. */}
       <div className="grid h-auto grid-cols-1 gap-6 md:h-[600px] md:grid-cols-3">
-        <FadeIn className="md:col-span-2">
+        <FadeIn className="w-full h-full md:col-span-2">
           <BentoCard
             image={WEIGHT_LOSS_IMAGE}
             title="Weight Loss Journey"
-            className="min-h-[350px] md:min-h-0 md:h-full"
+            className="h-full"
             rounded="rounded-3xl"
             overlayClassName="bg-gradient-to-t from-black/90 via-transparent"
           />
         </FadeIn>
 
         <div className="flex flex-col gap-6">
-          <FadeIn delay={0.1} className="flex-1">
+          <FadeIn delay={0.1} className="w-full h-full flex-1">
             <BentoCard
               image={STRENGTH_IMAGE}
               title="Strength Building"
-              className="min-h-[350px] md:min-h-0 md:h-full"
+              className="h-full"
               rounded="rounded-3xl"
               overlayClassName="bg-gradient-to-t from-black/90 via-transparent"
             />
           </FadeIn>
-          <FadeIn delay={0.2} className="flex-1">
+          <FadeIn delay={0.2} className="w-full h-full flex-1">
             <BentoCard
               image={COMBAT_IMAGE}
               title="Combat Conditioning"
-              className="min-h-[350px] md:min-h-0 md:h-full"
+              className="h-full"
               rounded="rounded-3xl"
               overlayClassName="bg-gradient-to-t from-black/90 via-transparent"
             />

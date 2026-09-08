@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 export interface BentoCardProps {
@@ -33,7 +34,7 @@ export interface BentoCardProps {
  * this stays reusable across any grid shape.
  *
  * Parallax and hover-scale live on two different nested elements (the
- * `motion.div` wrapper gets the scroll-linked `y`, the `<img>` inside
+ * `motion.div` wrapper gets the scroll-linked `y`, the `<Image>` inside
  * keeps its own CSS `group-hover:scale-105`) rather than combining both
  * transforms on one node — framer-motion would happily compose them,
  * but keeping them separate avoids any inline-style-vs-CSS-class
@@ -41,10 +42,12 @@ export interface BentoCardProps {
  * inset -15%) so the ±10% vertical drift never reveals empty space at
  * the top/bottom edge of the card.
  *
- * Note: still a plain `<img>`, not next/image — external Unsplash URLs
- * are used as `image` throughout this project without remote-pattern
- * config; switching this one card to next/image would need that config
- * without changing anything about the parallax/hover effect itself.
+ * Uses next/image with `fill` (rather than intrinsic width/height) so
+ * the image always covers its absolutely-positioned parallax wrapper
+ * regardless of the source photo's native aspect ratio — `object-cover
+ * object-center` then crops to fill without distorting or off-center
+ * subjects. Remote Unsplash sources need `images.remotePatterns` in
+ * next.config.js (see there) for next/image to optimize them.
  */
 export default function BentoCard({
   image,
@@ -61,14 +64,15 @@ export default function BentoCard({
   return (
     <div
       ref={ref}
-      className={`group relative aspect-[4/3] overflow-hidden lg:aspect-auto ${rounded} ${className}`}
+      className={`group relative flex w-full min-h-[400px] flex-col justify-end overflow-hidden md:min-h-0 ${rounded} ${className}`}
     >
-      <motion.div style={{ y }} className="absolute -top-[15%] inset-x-0 h-[130%] w-full">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <motion.div style={{ y }} className="absolute inset-x-0 -inset-y-[15%] h-[130%] w-full">
+        <Image
           src={image}
           alt={alt}
-          className="h-full w-full object-cover brightness-75 contrast-125 grayscale-[20%] transition-transform duration-500 group-hover:scale-105"
+          fill
+          sizes="(min-width: 768px) 50vw, 100vw"
+          className="object-cover object-center w-full h-full brightness-75 contrast-125 grayscale-[20%] transition-transform duration-500 group-hover:scale-105"
         />
       </motion.div>
       <div aria-hidden="true" className={`absolute inset-0 ${overlayClassName}`} />
