@@ -8,13 +8,14 @@ const STRENGTH_IMAGE =
 const COMBAT_IMAGE =
   "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=1200&auto=format&fit=crop";
 
-// This spec's own `py-32` (128px) top padding comfortably clears Hero's
-// fixed 64px `-bottom-16` card overlap when this section directly
-// follows <Hero /> (see components/sections/Hero.tsx) — no extra
-// clearance hack needed here.
+// `lg:py-32`'s top half comfortably clears Hero's fixed 64px
+// `-bottom-16` card overlap when this section directly follows
+// <Hero /> (see components/sections/Hero.tsx). Below `lg`, Hero's cards
+// flow in-document instead of overlapping — there's nothing to clear,
+// so a plain `py-20` there would leave a needlessly huge empty gap.
 export default function AboutBento() {
   return (
-    <section className="mx-auto max-w-7xl px-8 py-32">
+    <section className="mx-auto max-w-7xl px-8 py-20 lg:py-32">
       {/* Split text layout */}
       <div className="mb-16 flex flex-col gap-16 md:flex-row">
         <FadeIn className="md:w-1/3">
@@ -32,7 +33,7 @@ export default function AboutBento() {
 
         <FadeIn delay={0.15} className="md:w-2/3">
           <p className="text-lg leading-relaxed text-gray-400">
-            We are a professional fitness center dedicated to results — not
+            We are a professional fitness center dedicated to results, not
             just routines. We don&apos;t just sell memberships; we build real
             body transformations.
           </p>

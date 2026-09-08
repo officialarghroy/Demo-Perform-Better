@@ -93,29 +93,40 @@ const cardVariants: Variants = {
  * image if the video ever fails to load — see `videoFailed`) under a
  * heavy 3-stop dark gradient, a staggered two-line headline reveal, a
  * "BOOK YOUR INTRO SESSION" CTA that opens the global BookingModal
- * (ModalContext) once the headline lands, and a row of 4 cards pinned
- * `-bottom-16` past the hero's own bottom edge that slide up
- * sequentially once the CTA has appeared.
+ * (ModalContext) once the headline lands, and a row of 4 feature cards.
  *
- * Note: no `overflow-hidden` on the section — the whole point of the
- * overlap is for the bottom portion of the card row to render outside
- * the hero's own box, into the section that follows it in the page.
- * The fixed `-bottom-16` offset means the cards always protrude a
- * constant 64px below the hero regardless of how many rows they wrap
- * into at a given breakpoint — whatever section follows this one should
- * reserve a bit more than that (see AboutBento's `pt-*`) as clearance.
+ * Layout differs by breakpoint rather than using one `h-screen` +
+ * absolute-cards structure everywhere:
+ * - Below `lg`, the section is `min-h-[100dvh]` (not a strict `h-`), a
+ *   flex column with `justify-between` and real `pt-32`/`pb-16`
+ *   padding, and the card row is a normal, in-flow block (`mt-12`) —
+ *   this is what actually fixes the mobile collision: a *strict*
+ *   `h-[100dvh]` combined with absolutely-positioned cards has no way
+ *   to grow if the centered text block is taller than the viewport (a
+ *   massive `text-[11vw]` headline plus 4 cards on a short phone
+ *   screen), so the cards would overlap the text instead of the page
+ *   just getting taller. `min-h` lets the section grow to fit; letting
+ *   the cards flow in-document instead of floating at a fixed
+ *   `-bottom-16` means they simply push whatever comes after them
+ *   down, same as any other content.
+ * - At `lg` and up there's finally enough vertical room for the
+ *   original design: `h-[100dvh]` (strict), centered text, and the
+ *   card row pinned `absolute -bottom-16` past the section's own
+ *   bottom edge so it overlaps into whatever section follows (see
+ *   AboutBento's `pt-*`, which reserves clearance for exactly that
+ *   overlap — mobile no longer has an overlap to clear, hence
+ *   AboutBento's own `py-20 lg:py-32` split).
  *
- * The card row is a fixed 2x2 grid on small screens, widening to a
- * single `grid-cols-4` row at the `lg` breakpoint — icon/text sizing on
- * each card steps down slightly below `lg` so the 2x2 layout doesn't
- * feel cramped.
+ * The card row is a fixed 2x2 grid below `lg`, widening to a single
+ * `grid-cols-4` row at `lg` — icon/text sizing on each card steps down
+ * slightly below `lg` so the tighter 2x2 layout doesn't feel cramped.
  */
 export default function Hero() {
   const { open: openBookingModal } = useModal();
   const [videoFailed, setVideoFailed] = useState(false);
 
   return (
-    <section className="relative flex h-[100dvh] w-full flex-col items-center justify-center">
+    <section className="relative flex min-h-[100dvh] w-full flex-col items-center justify-between pt-32 pb-16 lg:h-[100dvh] lg:justify-center lg:pb-0">
       {/* Background: video, or a plain poster image if it ever errors. */}
       {videoFailed ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -146,7 +157,7 @@ export default function Hero() {
       />
 
       {/* Center text */}
-      <div className="relative z-10 px-4 text-center">
+      <div className="relative z-10 flex w-full flex-1 flex-col items-center justify-center px-4 text-center">
         <span className="block text-xs uppercase tracking-widest text-gray-400">
           Developed with experts, inspired by athletes...
         </span>
@@ -176,7 +187,7 @@ export default function Hero() {
       </div>
 
       {/* Overlapping feature cards */}
-      <div className="absolute -bottom-16 left-0 right-0 w-full px-8">
+      <div className="relative z-10 mt-12 w-full px-4 sm:px-8 lg:absolute lg:-bottom-16 lg:mt-0">
         <motion.div
           initial="hidden"
           animate="visible"
