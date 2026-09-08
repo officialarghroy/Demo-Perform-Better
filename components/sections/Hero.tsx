@@ -105,10 +105,10 @@ const cardVariants: Variants = {
  * into at a given breakpoint — whatever section follows this one should
  * reserve a bit more than that (see AboutBento's `pt-*`) as clearance.
  *
- * The card row is a `grid-cols-4` grid at the `lg` breakpoint and up,
- * but a horizontally `snap`-scrolling flex carousel below it — 4 equal
- * columns squeezed into a phone width would be illegibly cramped, so
- * each card gets its own near-full-width, centered slide instead.
+ * The card row is a fixed 2x2 grid on small screens, widening to a
+ * single `grid-cols-4` row at the `lg` breakpoint — icon/text sizing on
+ * each card steps down slightly below `lg` so the 2x2 layout doesn't
+ * feel cramped.
  */
 export default function Hero() {
   const { open: openBookingModal } = useModal();
@@ -181,7 +181,7 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           variants={cardsContainer}
-          className="mx-auto flex w-full max-w-7xl snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
+          className="mx-auto grid max-w-7xl grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4"
         >
           {CARDS.map((card) => (
             <motion.div
@@ -189,12 +189,12 @@ export default function Hero() {
               variants={cardVariants}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.97 }}
-              className="w-[85vw] shrink-0 snap-center rounded-2xl border border-white/5 bg-[#111111] p-4 backdrop-blur-md transition-all duration-300 hover:border-brand-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] sm:w-[300px] lg:w-auto lg:p-6"
+              className="rounded-2xl border border-white/5 bg-[#111111] p-3 backdrop-blur-md transition-all duration-300 hover:border-brand-gold/40 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)] sm:p-4 lg:p-6"
             >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold">
+              <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full bg-brand-gold/10 text-brand-gold lg:h-10 lg:w-10">
                 <card.icon className="h-5 w-5" />
               </div>
-              <h3 className="font-bold text-foreground">{card.title}</h3>
+              <h3 className="text-sm font-bold text-foreground lg:text-base">{card.title}</h3>
               <p className="mt-1 text-sm text-foreground/60">{card.subtext}</p>
             </motion.div>
           ))}
