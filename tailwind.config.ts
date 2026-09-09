@@ -6,6 +6,11 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    // Data files (e.g. lib/transformation-stories.ts) also carry literal
+    // Tailwind class strings — without scanning `./lib`, any utility
+    // that appears ONLY there (never duplicated inside app/components)
+    // gets silently purged instead of generated.
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {

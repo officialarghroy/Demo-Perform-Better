@@ -72,7 +72,7 @@ export default function BeforeAfterSlider({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className={`relative w-full ${aspectClassName} select-none overflow-hidden rounded-2xl border border-white/10 ${className}`}
+      className={`relative w-full ${aspectClassName} touch-none select-none overflow-hidden rounded-2xl border border-white/10 ${className}`}
     >
       {/* Base layer: after image, full frame */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -103,9 +103,15 @@ export default function BeforeAfterSlider({
         style={{ left: `${position}%` }}
       />
 
-      {/* Drag handle */}
+      {/* Drag handle — `after:inset-[-15px]` pads its touch target out to
+          ~70x70px (well past the 44px minimum recommended tap-target
+          size) without enlarging the visible 40x40 yellow circle. The
+          expanded hit area only matters perceptually: pointer handlers
+          live on the outer frame above, so a touch anywhere already
+          drags the slider — this just makes the handle itself easier to
+          land a thumb on. */}
       <motion.div
-        className="absolute top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center rounded-full bg-brand-yellow text-black shadow-lg"
+        className="absolute top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center rounded-full bg-brand-yellow text-black shadow-lg after:absolute after:inset-[-15px] after:content-['']"
         style={{ left: `${position}%` }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
