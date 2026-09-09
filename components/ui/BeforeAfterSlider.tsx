@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
 import { ChevronsLeftRight } from "lucide-react";
 
 export interface BeforeAfterSliderProps {
@@ -21,8 +20,18 @@ export interface BeforeAfterSliderProps {
 }
 
 /**
- * A draggable before/after image comparison. Drag the handle (or click
- * anywhere on the frame) to reveal more of the "before" image.
+ * A draggable before/after image comparison, driven by a native
+ * `<input type="range">` rather than custom pointer-event math or a
+ * Framer Motion `drag` gesture. The range input is stretched to cover
+ * the whole frame and made invisible (`opacity-0`), but stays the
+ * topmost, only interactive element (`z-30`) — every other layer below
+ * is `pointer-events-none` and purely visual. Dragging is then just
+ * "drag a slider", which the browser/OS already renders natively at a
+ * perfect 60fps and already gets touch handling right, instead of
+ * reimplementing that in JS (which is what was actually causing the
+ * lag/jitter on mobile: React state updates racing raw
+ * `pointermove`/`touchmove` events, competing with the browser's own
+ * touch-to-scroll gesture detection on the same element).
  */
 export default function BeforeAfterSlider({
   beforeSrc,
@@ -35,44 +44,13 @@ export default function BeforeAfterSlider({
   aspectClassName = "aspect-[4/3]",
   className = "",
 }: BeforeAfterSliderProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(
     Math.min(100, Math.max(0, initialPosition))
   );
-  const [isDragging, setIsDragging] = useState(false);
-
-  const updateFromClientX = useCallback((clientX: number) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const percent = ((clientX - rect.left) / rect.width) * 100;
-    setPosition(Math.min(100, Math.max(0, percent)));
-  }, []);
-
-  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setIsDragging(true);
-    updateFromClientX(event.clientX);
-  }
-
-  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!isDragging) return;
-    updateFromClientX(event.clientX);
-  }
-
-  function handlePointerUp(event: ReactPointerEvent<HTMLDivElement>) {
-    event.currentTarget.releasePointerCapture(event.pointerId);
-    setIsDragging(false);
-  }
 
   return (
     <div
-      ref={containerRef}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      className={`relative w-full ${aspectClassName} touch-none select-none overflow-hidden rounded-2xl border border-white/10 ${className}`}
+      className={`relative w-full ${aspectClassName} select-none overflow-hidden rounded-2xl border border-white/10 ${className}`}
     >
       {/* Base layer: after image, full frame */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -103,21 +81,17 @@ export default function BeforeAfterSlider({
         style={{ left: `${position}%` }}
       />
 
-      {/* Drag handle — `after:inset-[-15px]` pads its touch target out to
-          ~70x70px (well past the 44px minimum recommended tap-target
-          size) without enlarging the visible 40x40 yellow circle. The
-          expanded hit area only matters perceptually: pointer handlers
-          live on the outer frame above, so a touch anywhere already
-          drags the slider — this just makes the handle itself easier to
-          land a thumb on. */}
-      <motion.div
-        className="absolute top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize items-center justify-center rounded-full bg-brand-yellow text-black shadow-lg after:absolute after:inset-[-15px] after:content-['']"
+      {/* Handle — purely visual now; the invisible range input above it
+          is what's actually draggable, so this never receives pointer
+          events of its own (hence no hover/tap animation on it
+          anymore — it couldn't have fired anyway with the input on
+          top). */}
+      <div
+        className="pointer-events-none absolute top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-brand-yellow text-black shadow-lg"
         style={{ left: `${position}%` }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
       >
         <ChevronsLeftRight className="h-5 w-5" />
-      </motion.div>
+      </div>
 
       {/* Labels */}
       <span className="pointer-events-none absolute left-3 top-3 rounded bg-black/60 px-2 py-1 text-xs font-medium text-foreground">
@@ -126,6 +100,22 @@ export default function BeforeAfterSlider({
       <span className="pointer-events-none absolute right-3 top-3 rounded bg-black/60 px-2 py-1 text-xs font-medium text-foreground">
         {afterLabel}
       </span>
+
+      {/* Invisible native range input — the only interactive layer.
+          `touch-pan-y` (rather than `touch-none`) deliberately leaves
+          vertical page scrolling alone; only this element's own
+          horizontal drag gesture is claimed, so a vertical swipe that
+          starts on the slider still scrolls the page instead of being
+          swallowed. */}
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={position}
+        onChange={(e) => setPosition(Number(e.target.value))}
+        aria-label="Drag to compare before and after"
+        className="absolute inset-0 z-30 h-full w-full cursor-ew-resize opacity-0 touch-pan-y"
+      />
     </div>
   );
 }
